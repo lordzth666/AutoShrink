@@ -1,0 +1,5 @@
+optimizer='adam'
+lr=4e-3
+decay_method=stepwise_decay
+decay_steps=100
+decay=1.0

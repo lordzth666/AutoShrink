@@ -1,0 +1,5 @@
+optimizer='rmsprop_imagenet'
+lr=0.05
+decay_method=cosine_decay
+decay_steps=300
+decay=1.0
