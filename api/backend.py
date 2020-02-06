@@ -37,10 +37,6 @@ class _Backend:
     """
     def __init__(self, BACKEND="tensorflow", PROTO_BACKEND="native"):
         pass
-
-        # Set random seed.
-        tf.set_random_seed(233)
-        np.random.seed(233)
         #-----------BACKEND Settings--------
         # Can change that to other APIs in the future.
         self.BACKEND = BACKEND
@@ -88,13 +84,13 @@ class _Backend:
         # Use all gpu FLAG.
         self.USE_ALL_GPU = 0
 
-    def set_backend(self, BACKEND, seed=233):
+    def set_backend(self, BACKEND, seed=None):
         self.BACKEND = BACKEND
         if self.BACKEND == "tensorflow":
             import tensorflow as tf
             self.BACKEND_DEFAULT_INITIALIZER = lambda: tf.initializers.variance_scaling(seed=seed, scale=2.0, mode='fan_out')
             self.BACKEND_DEFAULT_CONV_INITIALIZER = self.BACKEND_DEFAULT_INITIALIZER
-            self.BACKEND_DEFAULT_FC_INITIALIZER = lambda: tf.initializers.random_normal(seed=seed, stddev=1e-3)
+            self.BACKEND_DEFAULT_FC_INITIALIZER = lambda: tf.initializers.random_normal(seed=seed, stddev=0.01)
             self.BACKEND_DEFAULT_REGULARIZER = tf.contrib.layers.l2_regularizer
             os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
         else:
