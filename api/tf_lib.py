@@ -92,7 +92,6 @@ LayerObj = {'Activation': Activation,
             'SoftmaxLoss': SoftmaxLoss,
             'Accuracy': Accuracy,
             'Concat': Concat,
-            'YoloLoss': YoloLoss,
             'Output': Output,
             'OutputWithSoftmax': OutputWithSoftmax,
             'TopkAcc': TopkAcc}
@@ -119,6 +118,6 @@ inputs_ = ['Input', 'Input_Definite']
 layers_ = ['Activation', 'BatchNorm','Convolutional', 'DepthwiseConv', 'SeparableConv', 'Add',
            'Add_n', 'Flatten', 'Dropout', 'Dense', 'MaxPool',
            'AvgPool','GlobalAvgPool', 'Concat', 'Identity', 'GlobalAvgPool1D']
-losses_ = ['SoftmaxLoss', 'YoloLoss']
+losses_ = ['SoftmaxLoss']
 metrics_ = {'Accuracy', 'TopkAcc'}
 outputs_ = {'Output', 'OutputWithSoftmax'}

@@ -33,7 +33,7 @@ def make_divisible(size, divisible_by=16):
 
 def distort_aspect_ratio(image,
                          bbox=None,
-                         min_object_covered=None,
+                         min_object_covered=0.1,
                          aspect_ratio_range=(0.75, 1.33),
                          area_range=(0.25, 1.0),
                          max_attempts=100,

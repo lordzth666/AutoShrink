@@ -71,6 +71,10 @@ class _Backend:
 
         # Specify no regularizatino value
         self.NO_REG = 1e-20
+        self.DEFAULT_REG = 4e-5
+
+        # Set a patch for sepconv_v1 series networks.
+        self.SEPCONV_V1_DEFAULT_ACTIVATION = "relu"
 
         # Specify conv order.
         self.EXEC_CONV_MODE = 'conv-bn-relu'
@@ -160,6 +164,13 @@ class _Backend:
         :return: None
         """
         self.USE_ALL_GPU = 1
+
+    def set_default_reg(self, reg):
+        self.DEFAULT_REG = reg
+
+    def set_default_sepconvV1_activation(self, activation):
+        self.SEPCONV_V1_DEFAULT_ACTIVATION = activation
+
 
 # Instantialize a backend instance.
 G = _Backend()

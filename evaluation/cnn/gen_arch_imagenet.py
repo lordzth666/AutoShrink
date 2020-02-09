@@ -30,12 +30,12 @@ sys.path.append(cwd)
 from evaluation.cnn.imagenet_estimator import ImageNetEstimator
 from api.backend import G
 
-G.config_bn_params(1e-3, 0.999)
 
 import argparse
 
 def main(args):
-    G.set_conv_triplet(args.triplet)
+    G.config_bn_params(1e-3, 0.999)
+
     with open(args.graph_path, 'rb') as fp:
         meta_graph = pickle.load(fp)
 
@@ -123,9 +123,6 @@ if __name__ == "__main__":
     optional.add_argument('--activation', type=str, nargs='?',
                           help="activation function",
                           default='relu')
-    optional.add_argument('--triplet', type=str, nargs='?',
-                          help="Conv execution triplet",
-                          default='conv-bn-relu')
     parser._action_groups.append(optional)
     args = parser.parse_args()
     main(args)

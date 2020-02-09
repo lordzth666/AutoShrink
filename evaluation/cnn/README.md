@@ -31,7 +31,7 @@ The directory layout for the training images should be as follows:
 ```
 #### Train the ShrinkCNNs
 
-ShrinkCNN-A(B) can achieve ~73.9(75.2) top-1 accuracy using the scripts below:
+ShrinkCNN-A(B) can achieve ~73.9(75.1) top-1 accuracy using the scripts below:
 
 ```sh
 CUDA_VISIBLE_DEVICES=0,1 python evaluation/cnn/imagenet-eval.py \

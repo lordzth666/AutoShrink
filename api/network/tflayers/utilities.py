@@ -2,10 +2,6 @@ import tensorflow as tf
 import numpy as np
 from api.backend import G
 
-#EXEC_CONV_MODE = 'conv-bn-relu'
-
-DEFAULT_REG = 4e-5
-
 def convert_to_legacy(data_format):
     if data_format == "channels_first":
         return "NCHW"
@@ -123,7 +119,7 @@ def convolution2d(inputs,
                   activation='linear',
                   initializer=G.BACKEND_DEFAULT_CONV_INITIALIZER(),
                   bias_initializer=tf.constant_initializer(0.00),
-                  regularizer=G.BACKEND_DEFAULT_REGULARIZER(DEFAULT_REG),
+                  regularizer=None,
                   trainable=True,
                   use_bias=True,
                   is_training=tf.convert_to_tensor(True),
@@ -145,6 +141,10 @@ def convolution2d(inputs,
     :return: A 4-D tensor: [batch, height_, width_, ofm].
     """
     assert G.BACKEND == "tensorflow"
+    if regularizer is None:
+        regularizer = G.BACKEND_DEFAULT_REGULARIZER(G.DEFAULT_REG)
+    else:
+        regularizer = regularizer
     if filters == -1:
         filters = int(inputs.get_shape()[-1])
     activation_fn = get_activation_fn(activation)
@@ -257,7 +257,7 @@ def dense(inputs,
           batchnorm=False,
           initializer=G.BACKEND_DEFAULT_FC_INITIALIZER(),
           bias_initializer=tf.constant_initializer(0.00),
-          regularizer=G.BACKEND_DEFAULT_REGULARIZER(DEFAULT_REG),
+          regularizer=None,
           trainable=True,
           use_bias=True,
           is_training=tf.convert_to_tensor(True)):
@@ -276,6 +276,10 @@ def dense(inputs,
     :return: A 2-D Tensor: [batch, ofm]
     """
     assert G.BACKEND == "tensorflow"
+    if regularizer is None:
+        regularizer = G.BACKEND_DEFAULT_REGULARIZER(G.DEFAULT_REG)
+    else:
+        regularizer = regularizer
     fc = tf.layers.dense(
         inputs=inputs,
         units=units,
@@ -761,8 +765,7 @@ def separable_conv2d_v1(inputs,
                      strides=1,
                      padding='SAME',
                      batchnorm=False,
-                     depthwise_activation='linear',
-                     pointwise_activation='linear',
+                     activation='linear',
                      initializer=G.BACKEND_DEFAULT_CONV_INITIALIZER(),
                      bias_initializer=tf.constant_initializer(0.00),
                      regularizer=G.BACKEND_DEFAULT_REGULARIZER(0.00),
@@ -792,6 +795,12 @@ def separable_conv2d_v1(inputs,
     if filters == -1:
         filters = int(inputs.get_shape()[-1])
     assert G.BACKEND == "tensorflow"
+
+    if activation == "linear":
+        depthwise_activation = G.SEPCONV_V1_DEFAULT_ACTIVATION
+    else:
+        depthwise_activation = activation
+
     if regularize_depthwise:
         depthwise_regularizer = regularizer
     else:
@@ -817,7 +826,7 @@ def separable_conv2d_v1(inputs,
             conv_pointwise = pointwise_conv2d(conv_depthwise,
                                               filters=filters,
                                               strides=1,
-                                              activation=pointwise_activation,
+                                              activation=activation,
                                               initializer=initializer,
                                               bias_initializer=bias_initializer,
                                               regularizer=regularizer,
@@ -837,8 +846,7 @@ def separable_conv2d_v2(inputs,
                      strides=1,
                      padding='SAME',
                      batchnorm=False,
-                     depthwise_activation='linear',
-                     pointwise_activation='linear',
+                     activation='linear',
                      initializer=G.BACKEND_DEFAULT_CONV_INITIALIZER(),
                      bias_initializer=tf.constant_initializer(0.00),
                      regularizer=G.BACKEND_DEFAULT_REGULARIZER(0.00),
@@ -865,7 +873,6 @@ def separable_conv2d_v2(inputs,
     :param use_bias: Use bias or not.
     :return: A 4-D tensor: [batch, height_, width_, ofm].
     """
-    assert depthwise_activation == pointwise_activation
     if filters == -1:
         if G.data_format == 'channels_last':
             filters = int(inputs.get_shape()[-1])
@@ -897,7 +904,7 @@ def separable_conv2d_v2(inputs,
             conv = batch_normalization(conv,
                                        trainable=trainable,
                                        is_training=is_training,
-                                       activation=pointwise_activation
+                                       activation=activation
                                        )
     elif mode == 'relu-conv-bn':
         raise DeprecationWarning("relu-conv-bn is deprecated. Please use the conv-bn-relu triplet.")

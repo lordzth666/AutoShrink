@@ -27,14 +27,18 @@ sys.path.append(dir_path)
 
 import argparse
 from api.backend import G
-G.config_bn_params(1e-3, 0.999)
 
 
 import numpy as np
 from evaluation.cnn.imagenet_estimator import ImageNetEstimator
 
 def main(args):
-    G.set_conv_triplet(args.triplet)
+    # Configure batch normalization hyperparameters.
+    G.config_bn_params(1e-3, 0.999)
+
+    # Uncomment this line if you are using sepconvV1 with linear bottleneck, and use "swish" activation.
+    # G.set_default_sepconvV1_activation("swish")
+
     estimator= ImageNetEstimator(
         image_size=args.image_size,
         prototxt=args.proto,
@@ -62,13 +66,9 @@ if __name__ == "__main__":
     optional.add_argument('--ngpus', type=int,
                           help="Number of GPU Slaves",
                           default=1)
-    optional.add_argument('--triplet', type=str, nargs='?',
-                          help="Conv execution triplet",
-                          default='conv-bn-relu')
     optional.add_argument("--tfrecord_path", type=str, nargs='?',
                           help="Path for tfrecord file",
                           default=None)
-
 
     parser._action_groups.append(optional)
     args = parser.parse_args()
