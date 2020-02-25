@@ -168,9 +168,7 @@ def _extract_imagenet_raw_fn(tfrecord, image_size):
         'image/width':  tf.FixedLenFeature([], tf.int64)
     }
     sample = tf.parse_single_example(tfrecord, features)
-    image = tf.image.decode_jpeg(sample['image/encoded'], channels=3,
-                                 fancy_upscaling=False,
-                                 dct_method="INTEGER_FAST")
+    image = tf.image.decode_jpeg(sample['image/encoded'], channels=3)
 
     image = tf.image.central_crop(image, 0.875)
 
@@ -200,9 +198,7 @@ def _extract_imagenet_fn(tfrecord, image_size, fast_mode=False):
         'image/width':  tf.FixedLenFeature([], tf.int64)
     }
     sample = tf.parse_single_example(tfrecord, features)
-    image = tf.image.decode_jpeg(sample['image/encoded'], channels=3,
-                                 fancy_upscaling=False,
-                                 dct_method="INTEGER_FAST")
+    image = tf.image.decode_jpeg(sample['image/encoded'], channels=3)
 
     #image = tf.to_float(image)
     #image = tf.multiply(image, 1. / 255)
